@@ -90,8 +90,73 @@ public class Main {
         m.setClasses(10);
         m.train(x, y);
 
-        // sample prediction
+        // load test data
+        double[][] xTest = new double[1][1];
+        double[] yTest = new double[1];
+        int testSamples = 0;
+
+        try {
+            Scanner s = new Scanner(new File("mnist_test.csv"));
+            String st;
+            String[] a;
+            while(s.hasNextLine()) {
+                st = s.nextLine();
+                testSamples++;
+            }
+
+            testSamples--;
+
+            s = new Scanner(new File("mnist_test.csv"));
+            s.nextLine();
+
+            xTest = new double[testSamples][features];
+            yTest = new double[testSamples];
+
+            line = 0;
+
+            while(s.hasNextLine()) {
+                st = s.nextLine();
+                a = st.split(",");
+
+                for(int i = 0; i < features; i++) {
+                    xTest[line][i] = Double.parseDouble(a[i]);
+                }
+
+                yTest[line] = Double.parseDouble(a[features]);
+                line++;
+            }
+        } catch(FileNotFoundException e) {
+            System.out.printf("couldn't open file\n");
+            System.exit((-1));
+        }
+
+        // regularize
+        for(int i = 0; i < xTest.length; i++) { // iterate over SAMPLES
+            for(int j = 0; j < xTest[0].length; j++) {  // iterate over FEATURES
+                xTest[i][j] /= maxX[j];
+            }
+        }
+
+        System.out.printf("loaded test data with %d samples\n", testSamples);
+
+        // calculate accuracy over test dataset
+        int correct = 0;
+        int wrong = 0;
         double o[];
+
+        for(int i = 0; i < xTest.length; i++) {
+            o = m.predict(xTest[i]);
+            if(argmax(o) != yTest[i]) {
+                wrong++;
+            } else {
+                correct++;
+            }
+        }
+
+        double accuracy = (double)(correct*100)/(correct+wrong);
+        System.out.printf("accuracy over test dataset is %.1f%%\n", accuracy);
+
+        // interactivity for no real reason
         Scanner si = new Scanner(System.in);
         String input;
         int entry;
@@ -102,11 +167,11 @@ public class Main {
             if(input.equals("exit")) System.exit((0));
             else {
                 entry = Integer.parseInt(input);
-                if(entry >= x.length) {
-                    System.out.printf("out of bounds; maximum is %d\n", x.length);
+                if(entry >= xTest.length) {
+                    System.out.printf("out of bounds; maximum is %d\n", xTest.length);
                 } else {
-                    o = m.predict(x[entry]);
-                    System.out.printf("Expected %.0f, got %d [ ", y[entry], argmax(o));
+                    o = m.predict(xTest[entry]);
+                    System.out.printf("Expected %.0f, got %d [ ", yTest[entry], argmax(o));
                     for(int i = 0; i < o.length; i++) {
                         System.out.printf("%.2f ", o[i]);
                     }
