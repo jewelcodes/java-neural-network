@@ -1,3 +1,11 @@
+
+/*
+ * java neural network for handwritten digit recognition written
+ * to familiarize myself with the language for my MET CS342 class
+ *
+ * september 2023
+ */
+
 package Model;
 
 public class Layer {
@@ -37,6 +45,24 @@ public class Layer {
 
     public ActivationFunction activationFunction() {
         return af;
+    }
+
+    public LossFunction lossFunction() {
+        return lf;
+    }
+
+    public int neuronCount() {
+        return nc;
+    }
+
+    public Neuron neuron(int i) {
+        if(i >= nc || i < 0) return null;
+        else return n[i];
+    }
+
+    public int[] neuronFeatures(int i) {
+        if(i >= nc || i < 0) return null;
+        else return features[i];
     }
 
     private boolean isAllTaken(boolean[] xb) {

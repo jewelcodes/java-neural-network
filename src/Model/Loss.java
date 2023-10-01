@@ -1,12 +1,14 @@
+
+/*
+ * java neural network for handwritten digit recognition written
+ * to familiarize myself with the language for my MET CS342 class
+ *
+ * september 2023
+ */
+
 package Model;
 
 public class Loss {
-    /*
-    LOGARITHMIC LOSS:
-     1-log(f(w, b, x))
-    DERIVATIVE:
-     1/(w*ln(10)*f(w, b, x))
-     */
     public double logLoss(double[] p, double[] y) {
         double sum = 0;
         double sample;

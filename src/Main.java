@@ -1,8 +1,14 @@
+
+/*
+ * java neural network for handwritten digit recognition written
+ * to familiarize myself with the language for my MET CS342 class
+ *
+ * september 2023
+ */
+
 import Model.*;
 import java.io.*;
 import java.util.Scanner;
-import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;
 
 public class Main {
     public static void main(String[] args) {
@@ -17,7 +23,7 @@ public class Main {
         double[] y = new double[1];
 
         try {
-            Scanner s = new Scanner(new File("mnist_test.csv"));
+            Scanner s = new Scanner(new File("mnist_train.csv"));
             String st;
             String[] a;
             while(s.hasNextLine()) {
@@ -27,7 +33,7 @@ public class Main {
 
             samples--;
 
-            s = new Scanner(new File("mnist_test.csv"));
+            s = new Scanner(new File("mnist_train.csv"));
             st = s.nextLine();
             a = st.split(",");
             features = a.length-1;
@@ -75,17 +81,14 @@ public class Main {
         l[1] = new Layer(50, ActivationFunction.RELU, LossFunction.MSE);
         l[2] = new Layer(1, ActivationFunction.SIGMOID, LossFunction.LOGLOSS);
 
-        DateTimeFormatter tf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        System.out.printf("starting at %s\n", tf.format(now));
+        /*Layer[] l = new Layer[2];
+        l[0] = new Layer(5, ActivationFunction.RELU, LossFunction.MSE);
+        l[1] = new Layer(1, ActivationFunction.SIGMOID, LossFunction.LOGLOSS);*/
 
         // NOW TRAIN THE MODEL
         Model m = new Model(l);
         m.setClasses(10);
         m.train(x, y);
-
-        now = LocalDateTime.now();
-        System.out.printf("completed at %s\n", tf.format(now));
 
         // sample prediction
         double o[];
